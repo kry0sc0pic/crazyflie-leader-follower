@@ -1,0 +1,5 @@
+cflib
+websockets
+fastapi
+uvicorn[standard]
+rich
