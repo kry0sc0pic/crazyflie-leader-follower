@@ -1,3 +1,5 @@
+import time
+
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import threading
 from cflib import crtp
@@ -59,7 +61,7 @@ async def set_position(position: dict):
     })
     LOGGER.log_position(position)
     if not TEST:
-        LEADER.go_to(position["x"], position["y"], position["z"])
+        await asyncio.get_event_loop().run_in_executor(None, lambda: LEADER.go_to(LEADER.go_to(position["x"], position["y"], position["z"])))
     return {"message": "Position sent to all followers."}
 
 
@@ -71,10 +73,10 @@ async def takeoff(height: float = 1.0):
     })
     LOGGER.log_takeoff(height)
     if not TEST:
-        LEADER.take_off(height=height)
+        await asyncio.get_event_loop().run_in_executor(None, lambda: LEADER.take_off(height=height))
     else:
         print("Simulating Action")
-        await asyncio.sleep(5)
+        await asyncio.get_event_loop().run_in_executor(None, lambda: time.sleep(5))
     return {"message": "Takeoff command sent to all followers."}
 
 
@@ -85,7 +87,7 @@ async def shutdown():
     })
     LOGGER.log_land()
     if not TEST:
-        LEADER.land()
+        await asyncio.get_event_loop().run_in_executor(None, lambda: LEADER.land())
         SCF.close_link()
     LOGGER.log_disconnected()
 
@@ -99,7 +101,7 @@ async def land():
     })
     LOGGER.log_land()
     if not TEST:
-        LEADER.land()
+        await asyncio.get_event_loop().run_in_executor(None, lambda: LEADER.land())
     return {"message": "Landing command sent to all followers."}
 
 
