@@ -7,6 +7,7 @@ from cflib.crazyflie import Crazyflie
 from common import reset_estimator, LeaderFollowerLogger
 import uvicorn
 import argparse
+import asyncio
 
 SCF = None
 LEADER = None
@@ -26,28 +27,25 @@ class FollowerManager:
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
         print("New Follower Connected")
-        with self.lock:
-            self.followers.append(websocket)
-            self.count += 1
-            if self.current_position:
-                await websocket.send_json(self.current_position)
-            else:
-                await websocket.send_json({"type": "land"})
+        # with self.lock:
+        self.followers.append(websocket)
+        self.count += 1
+        if self.current_position:
+            await websocket.send_json(self.current_position)
+        else:
+            await websocket.send_json({"type": "land"})
 
     def disconnect(self, websocket: WebSocket):
         print("Follower Disconnected")
-        with self.lock:
-            self.followers.remove(websocket)
-            self.count -= 1
+        # with self.lock:
+        self.followers.remove(websocket)
+        self.count -= 1
 
-    async def broadcast_message(self, position: dict):
-        with self.lock:
-            if position["type"] == "position":
-                self.current_position = position
-            elif position["type"] == "land":
-                self.current_position = {}
-            for follower in self.followers:
-                await follower.send_json(position)
+    async def broadcast_message(self, message: dict):
+        # with self.lock:
+        for follower in self.followers:
+            await follower.send_json(message)
+                # await follower
 
 
 follower_manager = FollowerManager()
@@ -61,7 +59,7 @@ async def set_position(position: dict):
     })
     LOGGER.log_position(position)
     if not TEST:
-        LEADER.go_to(position["x"], position["y"], position["z"], position["yaw"])
+        LEADER.go_to(position["x"], position["y"], position["z"])
     return {"message": "Position sent to all followers."}
 
 
@@ -74,6 +72,9 @@ async def takeoff(height: float = 1.0):
     LOGGER.log_takeoff(height)
     if not TEST:
         LEADER.take_off(height=height)
+    else:
+        print("Simulating Action")
+        await asyncio.sleep(5)
     return {"message": "Takeoff command sent to all followers."}
 
 
@@ -124,13 +125,13 @@ if __name__ == '__main__':
             print("Initializing drivers...")
             crtp.init_drivers(enable_debug_driver=False)
             LOGGER.log_trying_connection(args.URI)
-            SCF = SyncCrazyflie(args.URI, cf=Crazyflie(rw_cache='./cache'))
-            SCF.open_link()
+            SCF = Crazyflie(rw_cache='./cache')
+            SCF.open_link(args.URI)
             LEADER = PositionHlCommander(SCF)
         LOGGER.log_connected()
         if not TEST:
             LOGGER.log_resetting_estimator()
-            reset_estimator(SCF.cf)
+            reset_estimator(SCF)
             LOGGER.log_got_position()
     except Exception as e:
         print(e)

@@ -1,6 +1,7 @@
 from cflib.crazyflie.log import LogConfig
 from cflib.crazyflie.syncLogger import SyncLogger
 import time
+from datetime import datetime as dt
 from rich import print as pprint
 
 def wait_for_position_estimator(scf):
@@ -44,11 +45,10 @@ def wait_for_position_estimator(scf):
                 break
 
 def reset_estimator(scf):
-    cf = scf.cf
-    cf.param.set_value('kalman.resetEstimation', '1')
+    scf.param.set_value('kalman.resetEstimation', '1')
     time.sleep(0.1)
-    cf.param.set_value('kalman.resetEstimation', '0')
-    wait_for_position_estimator(cf)
+    scf.param.set_value('kalman.resetEstimation', '0')
+    wait_for_position_estimator(scf)
 
 class LeaderFollowerLogger():
     # 0 - Leader , 1 - Follower
@@ -58,29 +58,29 @@ class LeaderFollowerLogger():
         self.str_con = ("[yellow bold]"if type == 0 else "[magenta]")+f"{self.URI.replace('radio://', '')}"+("[/yellow bold]"if type == 0 else "[/magenta]")
 
     def log_position(self,position: dict):
-        pprint(f"<{self.str_con}>*️⃣MOVING TO x: [cyan]{position.get('x','UNKNOWN')}[/cyan], y: [cyan]{position.get('y','UNKNOWN')}[/cyan], z: [cyan]{position.get('z','UNKNOWN')}[/cyan],")
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}>*️⃣MOVING TO x: [cyan]{position.get('x','UNKNOWN')}[/cyan], y: [cyan]{position.get('y','UNKNOWN')}[/cyan], z: [cyan]{position.get('z','UNKNOWN')}[/cyan],")
 
     def log_takeoff(self,height: float):
-        pprint(f"<{self.str_con}> ⏫ TAKING OFF height: [cyan]{height}[/cyan]m")
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> ⏫ TAKING OFF height: [cyan]{height}[/cyan]m")
 
     def log_land(self):
-        pprint(f"<{self.str_con}> ⏬ LANDING")
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> ⏬ LANDING")
 
     def log_resetting_estimator(self):
-        pprint(f"<{self.str_con}> 🔄RESETTING ESTIMATOR")
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> 🔄RESETTING ESTIMATOR")
 
     def log_waiting_for_estimator(self):
-        pprint(f"<{self.str_con}> ⏳WAITING FOR ESTIMATOR")
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> ⏳WAITING FOR ESTIMATOR")
 
     def log_got_position(self):
-        pprint(f"<{self.str_con}> ✅GOT POSITION")
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> ✅GOT POSITION")
 
     def log_trying_connection(self,uri: str):
-        pprint(f"<{self.str_con}> 🟡TRYING TO CONNECT TO {uri}")
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> 🟡TRYING TO CONNECT TO {uri}")
 
     def log_connected(self):
-        pprint(f"<{self.str_con}> 🟢CONNECTED")
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> 🟢CONNECTED")
 
     def log_disconnected(self):
-        pprint(f"<{self.str_con}> 🔴DISCONNECTED")
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> 🔴DISCONNECTED")
 
