@@ -61,7 +61,7 @@ async def set_position(position: dict):
     })
     LOGGER.log_position(position)
     if not TEST:
-        await asyncio.get_event_loop().run_in_executor(None, lambda: LEADER.go_to(LEADER.go_to(position["x"], position["y"], position["z"])))
+        await asyncio.get_event_loop().run_in_executor(None, lambda: LEADER.go_to(position["x"], position["y"], position["z"]))
     return {"message": "Position sent to all followers."}
 
 

@@ -73,12 +73,14 @@ async def connect():
             m = await websocket.recv()
             handle_message(json.loads(m))
 
-asyncio.get_event_loop().run_until_complete(connect())
-LOGGER.log_land()
-if not TEST:
-    FOLLOWER.land()
-    SCF.close_link()
-LOGGER.log_disconnected()
+try:
+    asyncio.get_event_loop().run_until_complete(connect())
+finally:
+    LOGGER.log_land()
+    if not TEST:
+        FOLLOWER.land()
+        SCF.close_link()
+    LOGGER.log_disconnected()
 
 
 
