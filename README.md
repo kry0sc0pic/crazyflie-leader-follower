@@ -3,6 +3,11 @@ This is a very basic and primitive implementation of a leader follower system us
 
 Built under the mentorship of **Dr. Vishwesh A. Vyawahare** &  **Ms. Ritika Thusoo**  @ **Robotics Lab, Ramrao Adik Insitute of Technology.**
 
+## demo video
+https://github.com/kry0sc0pic/crazyflie-leader-follower/assets/62088268/18e3fd72-d914-49a9-a701-8d73c8f2a171
+
+
+
 ## how does it work?
 - Each follower drone is assigned a transform function that calculates its position based on the leader's position.
 - The Leader Drone is controlled via the operator via a REST API.
