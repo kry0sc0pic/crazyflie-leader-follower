@@ -84,3 +84,6 @@ class LeaderFollowerLogger():
     def log_disconnected(self):
         pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> 🔴DISCONNECTED")
 
+
+    def log_connected_to_leader(self):
+        pprint(f"<[red]{dt.now().strftime('%H:%M:%S')}[/red]> <{self.str_con}> 🟢CONNECTED TO LEADER")

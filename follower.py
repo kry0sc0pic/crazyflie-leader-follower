@@ -3,7 +3,7 @@ import websockets
 import argparse
 from cflib import crtp
 from cflib.positioning.position_hl_commander import PositionHlCommander
-import formations
+import formation
 import json
 from cflib.crazyflie.syncCrazyflie import SyncCrazyflie
 from cflib.crazyflie import Crazyflie
@@ -37,7 +37,7 @@ def handle_message(message: dict):
     global SHOULD_EXIT
     global FIRST
     if FIRST:
-        print("Connected to leader. Recieved first message")
+        LOGGER.log_connected_to_leader()
         FIRST = False
         return
 
@@ -58,7 +58,7 @@ def handle_message(message: dict):
         return
 
     if message['type'] == 'position':
-        pos: dict = eval(f"formations.{args.position}({message['position']})")
+        pos: dict = eval(f"formation.{args.position}({message['position']})")
         if not TEST:
             FOLLOWER.go_to(x=pos['x'],y=pos['y'],z=pos['z'])
         LOGGER.log_position(position=pos)
