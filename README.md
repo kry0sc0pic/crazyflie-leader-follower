@@ -102,3 +102,32 @@ def front_right(leader_position: dict):
     return new_position
 ``` 
 
+### endpoints
+1. Take Off
+```
+POST /takeoff
+```
+This will make the leader and all connected followers take off to a height of 1 meters.
+
+2. Land
+```
+POST /land
+```
+This will make the leader and all connected followers land.
+
+3. Set Position
+```
+POST /setpos
+{
+    "x": 1,
+    "y": 1,
+    "z": 1
+}
+```
+This will set the leader drone's position to the specified coordinates. The followers will adjust their positions accordingly.
+
+4. Shutdown
+```
+POST /shutdown
+```
+This should be run after the drones are landed. This will close the links between the server and drones.
