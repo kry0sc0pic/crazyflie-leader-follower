@@ -1,5 +1,5 @@
 # Crazyflie Leader Follower System
-This is a very basic and primitive implementation of a leader follower system using the Crazyflie 2.1 platform. 
+This is an implementation of a leader follower system based on a linear consensus protocol for maintaing formation.
 
 Built under the mentorship of **Dr. Vishwesh A. Vyawahare** &  **Ms. Ritika Thusoo**  @ **Robotics Lab, Ramrao Adik Insitute of Technology.**
 
